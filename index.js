@@ -28,15 +28,17 @@ app.get("/api/hello", function (req, res) {
 /* Sample
   {"unix":1451001600000, "utc":"Fri, 25 Dec 2015 00:00:00 GMT"}
  */
-app.get("/api/:time", function(req, res) {
-  const inputDate = new Date(req.params.time);
-
-  let outputTime = {
+app.get("/api/:date", function(req, res) {
+  // utc or unix?
+  // if number -> convert to utc
+  // if string -> convert to unix
+  let inputDate = req.params.date;
+  let outputDate   = {
     unix: new Date(inputDate),
     utc: new Date(inputDate)
   }
 
-  res.json(outputTime);
+  res.json(outputDate);
 });
 
 
