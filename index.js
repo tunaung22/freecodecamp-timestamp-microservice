@@ -60,10 +60,10 @@ app.get("/api/:date?", function(req, res) {
   }
 
 
-  const unixTime = new Date(parseInt(inputDate));
+  const unixTime = parseInt(inputDate);
   return res.json({
     unix: unixTime,
-    utc: unixTime.toUTCString()
+    utc: new Date(unixTime).toUTCString()
   });
 });
 
