@@ -28,17 +28,43 @@ app.get("/api/hello", function (req, res) {
 /* Sample
   {"unix":1451001600000, "utc":"Fri, 25 Dec 2015 00:00:00 GMT"}
  */
-app.get("/api/:date", function(req, res) {
+app.get("/api/:date?", function(req, res) {
   // utc or unix?
-  // if number -> convert to utc
-  // if string -> convert to unix
-  let inputDate = req.params.date;
-  let outputDate   = {
-    unix: new Date(inputDate),
-    utc: new Date(inputDate)
+  // if empty -> return unix
+  // if number/1451001600000 -> convert to utc
+  // if string/2015-12-25 -> convert to unix
+
+  const inputDate = req.params.date;
+
+  if (inputDate == undefined) {
+    const currentDate = Date.parse(new Date());
+    return res.json({ unix: currentDate });
   }
 
-  res.json(outputDate);
+  // 1451001600000
+  // 2015-12-25
+  if (isNaN(inputDate)) {
+    // 2015-12-25
+    const dateObj = new Date(inputDate);
+    console.log('dateObj ', dateObj);
+    console.log('dateObj.getTime() ', dateObj.getTime())
+
+    if (dateObj instanceof Date) {
+      return res.json({
+        unix: dateObj.getTime() / 1000,
+        utc: dateObj.toUTCString()
+      });
+    }
+
+    return res.json({ error : "Invalid Date" });
+  }
+
+
+  const unixTime = new Date(parseInt(inputDate));
+  return res.json({
+    unix: unixTime,
+    utc: unixTime.toUTCString()
+  });
 });
 
 
